@@ -3,17 +3,161 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Auto YT Uploader</title>
-  <style>
-    body { max-width: 640px; margin: 0 auto; padding: 32px 16px; font: 17px/1.6 system-ui, sans-serif; }
-  </style>
+  <meta name="description" content="Auto YT Uploader is a personal Android app that privately uploads videos from chosen folders to your own YouTube channel, then files them away on your phone.">
+  <meta name="theme-color" content="#f3e9d2">
+  <title>Auto YT Uploader — A calmer place for your camera roll</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
 </head>
 <body>
-  <h1>Auto YT Uploader</h1>
-  <p>Auto YT Uploader is a personal Android app. It uploads the videos in one album chosen by the
-    user to that user's own YouTube channel as private videos, then moves them to an album called
-    Uploaded on the phone.</p>
-  <p>The app uses Google sign-in with the YouTube upload permission, and only to upload those videos.</p>
-  <p><a href="privacy.html">Privacy policy</a></p>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="page-header">
+  <div class="announcement">
+    <span class="announcement-dot"></span>
+    <span>Personal Android utility · private by default</span>
+    <span class="announcement-line"></span>
+    <span class="announcement-detail">Made for the videos you already own</span>
+  </div>
+
+  <div class="site-header">
+    <a class="brand" href="index.html" aria-label="Auto YT Uploader home">
+      <img class="brand-logo" src="logo.svg" alt="" width="31" height="31">
+      <span class="brand-name"><strong>Auto YT</strong> Uploader</span>
+    </a>
+
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Menu">
+      <span></span><span></span>
+    </button>
+
+    <nav class="site-nav" id="site-nav" aria-label="Primary navigation">
+      <a href="#how-it-works">How it works</a>
+      <a href="#privacy">Privacy &amp; access</a>
+      <a href="privacy.html">Privacy policy</a>
+      <a class="nav-pill" href="#how-it-works">See the flow <span aria-hidden="true">↘</span></a>
+    </nav>
+  </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section class="hero section-shell" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-rule"></span>Android utility · private by default</p>
+        <h1 id="hero-title">Your videos have<br><em>a place to go.</em></h1>
+        <p class="hero-lede">Auto YT Uploader quietly sends selected videos to your own YouTube channel — private, organized, and out of the way.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#how-it-works">See how it works <span aria-hidden="true">↘</span></a>
+          <a class="button button-text" href="privacy.html">Read the privacy promise <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="hero-note">
+          <span class="note-icon" aria-hidden="true">✓</span>
+          <span>No public posting. No mystery destinations.</span>
+        </div>
+      </div>
+
+      <div class="hero-visual" role="img" aria-label="Illustration of the app on a phone: a video uploads privately, then moves to the Uploaded album.">
+        <div class="sun-disc" aria-hidden="true"></div>
+        <div class="orbit orbit-one" aria-hidden="true"></div>
+        <div class="orbit orbit-two" aria-hidden="true"></div>
+        <span class="visual-label label-top">quietly working</span>
+        <span class="visual-label label-bottom">your phone · your channel</span>
+
+        <div class="phone" aria-hidden="true">
+          <div class="phone-speaker"></div>
+          <div class="phone-screen">
+            <div class="phone-status"><span>9:41</span><span>● ◔ ▮</span></div>
+            <div class="phone-appbar">
+              <span class="mini-logo"><span></span></span>
+              <span>Auto YT</span>
+              <span class="appbar-menu">•••</span>
+            </div>
+            <div class="phone-greeting">
+              <span class="tiny-overline">TODAY'S QUEUE</span>
+              <strong>Looking tidy.</strong>
+            </div>
+            <div class="folder-card">
+              <div class="folder-icon"><span></span></div>
+              <div><strong>Camera / Trips</strong><small>12 videos ready</small></div>
+              <span class="folder-check">✓</span>
+            </div>
+            <div class="upload-card">
+              <div class="video-thumb"><span class="play-triangle"></span></div>
+              <div class="upload-info"><strong>lake-sunday.mp4</strong><small>Uploading privately</small><div class="progress"><span></span></div><em>68%</em></div>
+            </div>
+            <div class="album-row"><span class="album-icon">↗</span><div><strong>Uploaded</strong><small>Moves here when finished</small></div><span class="album-arrow">›</span></div>
+            <div class="phone-bottom-nav"><span class="active"></span><span></span><span></span></div>
+          </div>
+        </div>
+
+        <div class="floating-card card-private"><span class="floating-icon">✦</span><div><strong>Private</strong><small>only you can see it</small></div></div>
+        <div class="floating-card card-done"><span class="done-check">✓</span><div><strong>Moved</strong><small>to your Uploaded album</small></div></div>
+      </div>
+    </section>
+
+    <section class="proof-strip section-shell" aria-label="Key product promises">
+      <div class="proof-intro"><span class="scribble-arrow" aria-hidden="true">↘</span><span>Three calm steps.<br>One less thing to remember.</span></div>
+      <ol class="proof-list" role="list">
+        <li class="proof-item"><span class="proof-number" aria-hidden="true">01</span><strong>Choose folders</strong><small>Tell the app where to look.</small></li>
+        <li class="proof-item"><span class="proof-number" aria-hidden="true">02</span><strong>Upload privately</strong><small>Only to your own channel.</small></li>
+        <li class="proof-item"><span class="proof-number" aria-hidden="true">03</span><strong>Move on</strong><small>Finished files go to Uploaded.</small></li>
+      </ol>
+    </section>
+
+    <section class="steps section-shell" id="how-it-works" aria-labelledby="steps-title">
+      <div class="section-heading">
+        <p class="eyebrow"><span class="eyebrow-rule"></span>The simple version</p>
+        <h2 id="steps-title">A small ritual for<br><em>a crowded camera roll.</em></h2>
+      </div>
+      <ol class="step-list" role="list">
+        <li class="step-card">
+          <div class="step-topline"><span class="step-index" aria-hidden="true">01</span><span class="step-icon icon-folder" aria-hidden="true">▰</span></div>
+          <h3>Point it at a folder</h3>
+          <p>Choose the folders you want Auto YT Uploader to watch. Keep your camera roll exactly where it is.</p>
+          <span class="step-caption">Your choice, always</span>
+        </li>
+        <li class="step-card step-card-featured">
+          <div class="step-topline"><span class="step-index" aria-hidden="true">02</span><span class="step-icon icon-cloud" aria-hidden="true">↑</span></div>
+          <h3>Let it upload quietly</h3>
+          <p>Videos travel to your own YouTube channel as private uploads. Nothing is published for the world to see.</p>
+          <span class="step-caption">Private from the start</span>
+        </li>
+        <li class="step-card">
+          <div class="step-topline"><span class="step-index" aria-hidden="true">03</span><span class="step-icon icon-archive" aria-hidden="true">↗</span></div>
+          <h3>Find the finished ones</h3>
+          <p>When a video is done, the app moves it into an album called Uploaded on your phone.</p>
+          <span class="step-caption">A little more room</span>
+        </li>
+      </ol>
+    </section>
+
+    <section class="privacy section-shell" id="privacy" aria-labelledby="privacy-title">
+      <div class="privacy-panel">
+        <div class="privacy-main">
+          <p class="eyebrow eyebrow-light"><span class="eyebrow-rule"></span>The boundaries matter</p>
+          <h2 id="privacy-title">A direct line.<br><em>Nothing extra.</em></h2>
+          <p>Auto YT Uploader is built for one personal job: moving your videos to your own YouTube channel. It does not need a backstage pass to the rest of your account.</p>
+          <a class="button button-light" href="privacy.html">Read the full privacy policy <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="privacy-list">
+          <div class="privacy-row"><span class="privacy-badge" aria-hidden="true">01</span><div><h3>Your channel only</h3><p>Uploads are sent to the YouTube channel belonging to the Google account you sign in with.</p></div></div>
+          <div class="privacy-row"><span class="privacy-badge" aria-hidden="true">02</span><div><h3>Permission for uploading</h3><p>Google sign-in uses the YouTube upload permission only for the videos you choose to upload.</p></div></div>
+          <div class="privacy-row"><span class="privacy-badge" aria-hidden="true">03</span><div><h3>Private by default</h3><p>Each uploaded video is set to private, so it stays for you unless you decide otherwise.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing section-shell" aria-labelledby="closing-title">
+      <div class="closing-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+      <p class="eyebrow"><span class="eyebrow-rule"></span>For the person behind the camera</p>
+      <h2 id="closing-title">Set it once.<br><em>Let your camera roll catch up.</em></h2>
+      <p class="closing-copy">A personal Android app for making private video backups feel less like a chore.</p>
+      <div class="closing-links"><a class="button button-primary" href="terms.html">View terms of service <span aria-hidden="true">↗</span></a><a class="button button-text" href="privacy.html">Privacy policy <span aria-hidden="true">↗</span></a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer section-shell">
+    <a class="brand brand-footer" href="index.html" aria-label="Auto YT Uploader home"><img class="brand-logo" src="logo.svg" alt="" width="31" height="31"><span class="brand-name"><strong>Auto YT</strong> Uploader</span></a>
+    <p>Personal Android app · Built for your own videos.</p>
+    <div class="footer-links"><a href="privacy.html">Privacy policy</a><a href="terms.html">Terms of service</a><span>© <span id="year"></span> Auto YT Uploader</span></div>
+  </footer>
 </body>
 </html>

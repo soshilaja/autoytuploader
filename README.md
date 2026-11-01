@@ -1,7 +1,8 @@
 # Auto YT Uploader
 
-An Android app that uploads every video in one album you choose to your YouTube channel, as a
-**private** video, then moves it into an album called **Uploaded** on your phone.
+An Android app that uploads every video in the folders you choose to your YouTube channel, as
+**private** videos, one folder at a time in your chosen order. Each uploaded video then moves
+into an album called **Uploaded** on your phone.
 
 This guide takes you from nothing to a working upload. No coding is needed. Do the parts in
 order and don't skip any. Allow about 30 minutes.
@@ -90,26 +91,30 @@ This is the permission screen you'll see when you sign in from the app.
 
 ### Step 3b: Put a homepage and privacy policy online
 
-Google won't let you publish the app without these two public web pages. They're ready in the
-project's `site` folder and can be hosted free on GitHub Pages.
+Google won't let you publish the app without a public homepage and privacy policy. These pages,
+plus optional terms of service, are ready in the project's `site` folder and can be hosted free
+on GitHub Pages.
 
 1. Sign in or sign up at [github.com](https://github.com).
 2. Create a [new repository](https://github.com/new) named `autoyt-uploader-site`. Set it to
    **Public** and click **Create repository**.
-3. Click **uploading an existing file**. Drag in `index.html` and `privacy.html` from the `site`
-   folder (the two files, not the folder), then click **Commit changes**.
+3. Click **uploading an existing file**. Drag in everything inside the `site` folder: `index.html`,
+   `privacy.html`, `terms.html`, `styles.css`, `script.js` and `logo.svg` (the files, not the
+   folder), then click **Commit changes**.
 4. Open the repository's **Settings > Pages**.
 5. Under **Branch**, choose **main**, keep **/ (root)**, then click **Save**.
 6. Wait a minute or two, then open these, using your GitHub username:
    - `https://YOUR_USERNAME.github.io/autoyt-uploader-site/`
    - `https://YOUR_USERNAME.github.io/autoyt-uploader-site/privacy.html`
+   - `https://YOUR_USERNAME.github.io/autoyt-uploader-site/terms.html`
 7. In **Google Auth Platform > Branding**, enter:
    - **Application home page:** the first address
    - **Application privacy policy link:** the second address
+   - **Application terms of service link:** the third address
    - **Authorized domains:** click **Add domain** and enter `YOUR_USERNAME.github.io`
 8. Click **Save**.
 
-**Check:** both addresses open in a private browser window, and **Branding** saves without errors.
+**Check:** all three addresses open in a private browser window, and **Branding** saves without errors.
 
 ### Step 4: Add the upload permission and publish
 
@@ -179,7 +184,9 @@ an app signed with a different key.
 
 ## Part 3: Set up the app
 
-Open **Auto YT Uploader**. When it asks to send notifications, tap **Allow**. Then, in this order:
+Open **Auto YT Uploader**. When it asks to send notifications, tap **Allow**. The app has four tabs
+along the bottom: **Overview**, **Folders**, **Uploads** and **Settings**. Steps 1 to 3 are on
+**Overview**, in a card called **A few things to set up**. Do them in this order:
 
 ### Step 1: Sign in to YouTube
 
@@ -189,7 +196,7 @@ Open **Auto YT Uploader**. When it asks to send notifications, tap **Allow**. Th
    Uploader**. This warning is expected, because you made this app yourself.
 4. Allow the permission to manage your YouTube videos, then tap **Continue**.
 
-**Check:** the screen says **Signed in to YouTube**.
+**Check:** the **Sign in to YouTube** button disappears, and the **Settings** tab says **Signed in to YouTube**.
 
 ### Step 2: Allow access to videos
 
@@ -210,34 +217,48 @@ Open **Auto YT Uploader**. When it asks to send notifications, tap **Allow**. Th
 Some phones, including Samsung, Xiaomi and Huawei, stop background apps even after this. If yours
 does, see [Uploads only happen when the app is open](#uploads-only-happen-when-the-app-is-open).
 
-### Step 4: Choose your album
+### Step 4: Add your folders
 
-> **Everything in this album gets uploaded, including videos already there.** Check it first.
-> If you pick your main camera album, every video you record will upload and then move out of it.
+> **Everything in these folders gets uploaded, including videos already there.** Check them first.
+> If you add your main camera folder, every video you record will upload and then move out of it.
+>
+> **WhatsApp:** videos sent to you in chats get uploaded too, then move out of WhatsApp's folder,
+> so they may stop opening inside the chat. Sent videos are usually in a separate folder.
 
 If you want to pick which videos upload, first create a folder for it, such as `Movies/ToYouTube`,
 with your **Files** app and put at least one video in it. Empty folders don't appear in the list.
 
-1. Tap **Choose album**.
-2. Tap the album. Uploading starts right away.
+1. Open the **Folders** tab and tap **Add a folder**.
+2. Tap a folder. Uploading starts right away.
+3. Repeat for each folder you want.
+4. Tap the three dots beside a folder for **Move up**, **Move down** and **Remove**.
+5. Use the switch beside a folder to pause it without losing its place in the order.
 
-**Check:** the screen shows **Album to upload from:** and your album's name.
+The app uploads everything it can from folder 1, then folder 2, and so on. If a new video arrives
+in an earlier folder, it goes next, after the current upload finishes. A video waiting for Wi-Fi
+doesn't hold up the others: the app moves on to the next video it can upload.
+
+**Check:** your folders are listed on the **Folders** tab.
+
+To keep finished videos where they are, turn off **After upload**. They still won't upload twice,
+and videos already finished stay where they are if you change this later.
 
 ### Step 5: Set the mobile data limit
 
-**Largest video on mobile data (MB)** starts at `100`. Videos up to this size upload on any
-connection. Larger ones wait for Wi-Fi. As a guide, one minute of 4K video is about 400 MB.
+On the **Settings** tab, **Largest video on mobile data (MB)** starts at `100`. Videos up to this
+size upload on any connection. Larger ones wait for Wi-Fi. As a guide, one minute of 4K video is
+about 400 MB.
 
-To never use mobile data, enter `0`.
+To never use mobile data, turn on **Wi-Fi only**. Your limit is kept for when you turn it off.
 
 ---
 
 ## Part 4: Test it
 
 1. Connect to Wi-Fi.
-2. Put a **short** video in your chosen album.
+2. Put a **short** video in your first folder.
 3. Wait about a minute. New videos must sit unchanged for 30 seconds before they upload.
-4. Open the app and look under **Recent uploads**. The video should show **done**.
+4. Open the app's **Uploads** tab. The video should show **Done · moved to Uploaded**.
 5. Open [studio.youtube.com](https://studio.youtube.com) and click **Content**. The video should
    be listed as **Private**, titled with its filename.
 6. In your phone's gallery, check that the video is now in the **Uploaded** album.
@@ -248,13 +269,19 @@ If all of that worked, setup is complete. Otherwise, see [Troubleshooting](#trou
 
 ## Everyday use
 
-Move or save a video into your chosen album. The app does the rest, with no need to open it.
+Move or save a video into one of your folders. The app does the rest, with no need to open it.
+
+**Notifications:** you'll see upload progress while a video is sending, plus an alert if a video
+fails, you reach the daily limit, or you need to sign in again. To also hear when everything has
+finished, turn on **Notifications** on the **Settings** tab. Android may hide the progress
+notification on some background uploads.
 
 - **Timing:** usually within a minute or so, with a backup check about every 15 minutes.
 - **Interruptions:** if the connection drops, the upload continues from where it stopped.
-- **Status:** under **Recent uploads**, each video shows **uploading**, **done** or **failed**.
-- **Upload now and retry failures:** starts a check immediately, retries failed videos and
-  clears a daily-limit pause.
+- **Status:** the **Uploads** tab shows each video as uploading, queued, paused, done or failed.
+- **Retry upload:** on the **Uploads** tab, tries one failed video again.
+- **Upload now and retry failures:** on the **Overview** tab, starts a check immediately, retries
+  all failed videos and clears a daily-limit pause.
 
 ---
 
@@ -269,7 +296,7 @@ Move or save a video into your chosen album. The app does the rest, with no need
 - **Originals stay on your phone.** They move to `Movies/Uploaded` and are never deleted. YouTube
   doesn't keep a copy at your original quality, so keep any you care about.
 - **Made for Kids:** the app doesn't set this. YouTube Studio may ask you to choose.
-- **Uninstalling** erases the app's upload history. Videos still in the album after you reinstall
+- **Uninstalling** erases the app's upload history. Videos still in your folders after you reinstall
   could upload a second time.
 - **Stopping access:** there's no sign-out button. Uninstall the app, or remove it at
   [myaccount.google.com/permissions](https://myaccount.google.com/permissions).
@@ -309,20 +336,21 @@ may be unfinished. Recheck Part 1, Steps 3 and 4.
 
 **Publishing status** is still **Testing**. Follow Part 1, Step 4, then sign in again.
 
-### Your album isn't in the list
+### Your folder isn't in the list
 
-The list only shows folders containing at least one video, and it hides the **Uploaded** album.
-Add a video, check that **Allow access to videos** was granted, then tap **Choose album** again.
+The list only shows folders containing at least one video. It hides the **Uploaded** album and
+folders you've already added. Add a video, check that **Allow access to videos** was granted, then
+tap **Add a folder** again.
 
 ### Nothing uploads
 
 Go through this list:
 
-1. The screen says **Signed in to YouTube**.
-2. The **Allow access to videos** button is gone.
-3. An album is selected.
-4. The video is in that album, and not one that already shows **done** or **failed**.
-5. You're on Wi-Fi, or the video is under your mobile data limit.
+1. The **Settings** tab says **Signed in to YouTube**.
+2. The **Allow access to videos** button is gone from **Overview**.
+3. At least one folder is added, and its switch is on.
+4. The video is in an added folder, and doesn't already show **Done** or **Failed**.
+5. You're on Wi-Fi, or **Wi-Fi only** is off and the video is under your mobile data limit.
 6. You've waited at least a minute. Then tap **Upload now and retry failures**.
 
 ### Uploads only happen when the app is open
@@ -332,10 +360,10 @@ Battery**, and choose **Unrestricted**. Names vary by phone. Also turn off any *
 
 [dontkillmyapp.com](https://dontkillmyapp.com) has steps for each phone brand.
 
-### A video shows "failed"
+### A video shows "Failed"
 
 Read the message beside it. `YouTube returned 403` with `youtubeSignupRequired` means the account
-has no YouTube channel yet: create one, then tap **Upload now and retry failures**.
+has no YouTube channel yet: create one, then tap **Retry upload**.
 
 ### "Uploaded, but could not be moved to the Uploaded album"
 

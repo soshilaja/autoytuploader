@@ -14,6 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 object Notifications {
     const val PROGRESS_ID = 1
     private const val ALERT_ID = 2
+    private const val BATCH_ID = 3
     private const val CHANNEL = "uploads"
 
     fun createChannel(context: Context) {
@@ -31,7 +32,11 @@ object Notifications {
             .setSilent(true)
             .build()
 
-    fun alert(context: Context, text: String) {
+    /** Uses its own id so it can't replace a failure alert that is still unread. */
+    fun batchDone(context: Context, count: Int) =
+        alert(context, "${UploadRules.videoCount(count)} uploaded privately.", BATCH_ID)
+
+    fun alert(context: Context, text: String, id: Int = ALERT_ID) {
         if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
         val open = PendingIntent.getActivity(
             context, 0, Intent(context, MainActivity::class.java), PendingIntent.FLAG_IMMUTABLE,
@@ -43,6 +48,6 @@ object Notifications {
             .setContentIntent(open)
             .setAutoCancel(true)
             .build()
-        NotificationManagerCompat.from(context).notify(ALERT_ID, notification)
+        NotificationManagerCompat.from(context).notify(id, notification)
     }
 }

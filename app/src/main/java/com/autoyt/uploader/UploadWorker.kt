@@ -2,8 +2,6 @@ package com.autoyt.uploader
 
 import android.content.Context
 import android.content.pm.ServiceInfo
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
@@ -16,6 +14,7 @@ class UploadWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     private val db = UploadDb(app)
     private val library = VideoLibrary(app)
     private val uploader = YouTubeUploader(app)
+    private val queue = UploadQueue(app)
 
     override suspend fun doWork(): Result {
         // The sweep and the trigger can overlap; the active run rescans, so a second one can just exit.
@@ -28,25 +27,31 @@ class UploadWorker(context: Context, params: WorkerParameters) : CoroutineWorker
     }
 
     private suspend fun uploadAll(): Result {
-        val albumId = settings.albumId ?: return Result.success()
+        if (settings.activeAlbums.isEmpty()) return Result.success()
         if (System.currentTimeMillis() < settings.pausedUntil) return Result.success()
 
         var tokenRetries = 0
+        var uploaded = 0
         var token = fetchToken() ?: return Result.success()
         while (true) {
             val now = System.currentTimeMillis()
-            val waiting = library.videos(albumId).filter { isWaiting(it) }
+            // Rescanning in folder order means earlier folders are emptied first, even mid-run.
+            val waiting = queue.waiting()
             val video = waiting.firstOrNull {
-                UploadRules.isSettled(it.modifiedMillis, now) && allowedNow(it)
+                UploadRules.isSettled(it.modifiedMillis, now) && queue.allowedNow(it)
             }
             if (video == null) {
                 if (waiting.any { !UploadRules.isSettled(it.modifiedMillis, now) }) {
                     Scheduler.uploadAfterSettling(app)
                 }
+                if (waiting.isEmpty() && uploaded > 0 && settings.batchNotifications) {
+                    Notifications.batchDone(app, uploaded)
+                }
                 return Result.success()
             }
             try {
                 uploadOne(video, token)
+                uploaded++
             } catch (e: TokenRejected) {
                 if (++tokenRetries > 2) return Result.retry()
                 YouTubeAuth.clearToken(app, token)
@@ -67,11 +72,6 @@ class UploadWorker(context: Context, params: WorkerParameters) : CoroutineWorker
         }
     }
 
-    private fun isWaiting(video: Video): Boolean {
-        val status = db.find(video.id)?.status
-        return status != UploadStatus.DONE && status != UploadStatus.FAILED
-    }
-
     private suspend fun fetchToken(): String? {
         val token = try {
             YouTubeAuth.tokenOrNull(app)
@@ -87,44 +87,43 @@ class UploadWorker(context: Context, params: WorkerParameters) : CoroutineWorker
 
     private suspend fun uploadOne(video: Video, token: String) {
         showProgress(video)
-        val session = db.find(video.id)?.sessionUrl ?: newSession(video, token)
-        val videoId = send(video, session, token)
-            ?: send(video, newSession(video, token), token)
-            ?: throw IOException("Upload session expired twice")
-        val moved = library.moveToUploaded(video)
-        db.save(
-            UploadRecord(
-                video.id, video.name, UploadStatus.DONE, null, videoId,
-                if (moved) null else "Uploaded, but could not be moved to the Uploaded album",
-            )
-        )
+        UploadProgress.current.value = ActiveUpload(video.id, 0)
+        try {
+            val session = db.find(video.id)?.sessionUrl ?: newSession(video, token)
+            val videoId = send(video, session, token)
+                ?: send(video, newSession(video, token), token)
+                ?: throw IOException("Upload session expired twice")
+            val message = when {
+                !settings.moveAfterUpload -> UploadRecord.LEFT_IN_FOLDER
+                library.moveToUploaded(video) -> null
+                else -> "Uploaded, but could not be moved to the Uploaded album"
+            }
+            db.save(UploadRecord(video.id, video.name, UploadStatus.DONE, null, videoId, message, video.albumName))
+        } finally {
+            UploadProgress.current.value = null
+        }
     }
 
     private fun newSession(video: Video, token: String): String {
         val session = uploader.startSession(video, token)
-        db.save(UploadRecord(video.id, video.name, UploadStatus.UPLOADING, session, null, null))
+        db.save(UploadRecord(video.id, video.name, UploadStatus.UPLOADING, session, null, null, video.albumName))
         return session
     }
 
     private fun send(video: Video, session: String, token: String): String? =
         uploader.upload(
             video, session, token,
-            canContinue = { !isStopped && allowedNow(video) },
+            canContinue = { !isStopped && queue.allowedNow(video) },
             onProgress = { sent ->
-                setForegroundAsync(foregroundInfo(video.name, (sent * 100 / video.sizeBytes).toInt()))
+                val percent = (sent * 100 / video.sizeBytes).toInt()
+                UploadProgress.current.value = ActiveUpload(video.id, percent)
+                setForegroundAsync(foregroundInfo(video.name, percent))
             },
         )
 
     private fun fail(video: Video, message: String?) {
-        db.save(UploadRecord(video.id, video.name, UploadStatus.FAILED, null, null, message))
+        db.save(UploadRecord(video.id, video.name, UploadStatus.FAILED, null, null, message, video.albumName))
         Notifications.alert(app, "${video.name} could not be uploaded.")
-    }
-
-    private fun allowedNow(video: Video): Boolean {
-        val manager = app.getSystemService(ConnectivityManager::class.java)
-        val capabilities = manager.getNetworkCapabilities(manager.activeNetwork) ?: return false
-        val unmetered = capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_NOT_METERED)
-        return UploadRules.allowedOnNetwork(video.sizeBytes, unmetered, settings.mobileLimitMb)
     }
 
     /** Android may refuse a background start; the upload then runs unprotected and resumes if killed. */
